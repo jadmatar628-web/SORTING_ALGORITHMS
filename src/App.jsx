@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import SetupForm from './components/SetupForm.jsx';
 import StepForm from './components/StepForm.jsx';
 import ResultTable from './components/ResultTable.jsx';
+import PerfectScoreCelebration from './components/PerfectScoreCelebration.jsx';
 import { generateBubbleSortTrace } from './sorting/bubbleSortTrace.js';
 import { generateSelectionSortTrace } from './sorting/selectionSortTrace.js';
 import { generateInsertionSortTrace } from './sorting/insertionSortTrace.js';
@@ -96,6 +97,7 @@ export default function App() {
   const [stepErrors, setStepErrors] = useState({});
   const [setupError, setSetupError] = useState('');
   const [results, setResults] = useState(null);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   useEffect(() => {
     localStorage.setItem(
@@ -109,6 +111,7 @@ export default function App() {
     setSetupError('');
     setStepErrors({});
     setResults(null);
+    setShowCelebration(false);
 
     const size = Math.max(2, Math.min(12, Number(setup.size) || 5));
     const nextSetup = { ...setup, size };
@@ -151,6 +154,7 @@ export default function App() {
     const nextSteps = userSteps.map((step, index) => (index === stepIndex ? nextStep : step));
     setUserSteps(nextSteps);
     setResults(null);
+    setShowCelebration(false);
   }
 
   function handleSubmit(event) {
@@ -175,10 +179,13 @@ export default function App() {
 
     if (Object.keys(errors).length > 0) {
       setResults(null);
+      setShowCelebration(false);
       return;
     }
 
-    setResults(compareUserSteps(parsedSteps, correctSteps));
+    const nextResults = compareUserSteps(parsedSteps, correctSteps);
+    setResults(nextResults);
+    setShowCelebration(nextResults.percentage === 100);
   }
 
   const algorithmName = algorithmLabels[setup.algorithm] ?? 'Insertion Sort';
@@ -224,7 +231,15 @@ export default function App() {
         </section>
       )}
 
-      <ResultTable results={results} onTryAgain={() => setResults(null)} />
+      <ResultTable
+        results={results}
+        onTryAgain={() => {
+          setResults(null);
+          setShowCelebration(false);
+        }}
+      />
+
+      {showCelebration && <PerfectScoreCelebration onClose={() => setShowCelebration(false)} />}
 
       <footer className="watermark">
         Created by Jad Matar Whatsapp{' '}

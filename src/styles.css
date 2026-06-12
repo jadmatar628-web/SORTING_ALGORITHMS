@@ -344,6 +344,222 @@ select {
   text-decoration: underline;
 }
 
+.celebration-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(53, 102, 214, 0.24), transparent 26%),
+    radial-gradient(circle at 80% 25%, rgba(34, 160, 107, 0.22), transparent 24%),
+    rgba(8, 15, 32, 0.74);
+  padding: 24px;
+}
+
+.confetti-field {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.confetti-piece {
+  position: absolute;
+  left: var(--x);
+  top: -24px;
+  width: 10px;
+  height: 18px;
+  border-radius: 3px;
+  background: #f7c948;
+  animation: confetti-fall var(--duration) linear var(--delay) infinite;
+}
+
+.confetti-piece:nth-child(3n) {
+  background: #ef476f;
+}
+
+.confetti-piece:nth-child(4n) {
+  background: #22a06b;
+}
+
+.confetti-piece:nth-child(5n) {
+  background: #56ccf2;
+}
+
+.celebration-card {
+  position: relative;
+  width: min(440px, 100%);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 96px 28px 28px;
+  text-align: center;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+}
+
+.pinata-string {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 74px;
+  background: #334155;
+  transform: translateX(-50%);
+}
+
+.pinata {
+  position: absolute;
+  top: 48px;
+  left: 50%;
+  width: 154px;
+  height: 110px;
+  transform-origin: 50% -46px;
+  animation: pinata-swing 1.5s ease-in-out infinite;
+}
+
+.pinata-body {
+  position: absolute;
+  inset: 18px 22px 26px;
+  display: grid;
+  overflow: hidden;
+  border: 3px solid #172033;
+  border-radius: 50% 45% 48% 44%;
+  background: #f7c948;
+}
+
+.pinata-body span:nth-child(1) {
+  background: #ef476f;
+}
+
+.pinata-body span:nth-child(2) {
+  background: #f7c948;
+}
+
+.pinata-body span:nth-child(3) {
+  background: #22a06b;
+}
+
+.pinata-body span:nth-child(4) {
+  background: #56ccf2;
+}
+
+.pinata-ear {
+  position: absolute;
+  top: 10px;
+  width: 38px;
+  height: 34px;
+  border: 3px solid #172033;
+  background: #ef476f;
+  transform: rotate(45deg);
+}
+
+.pinata-ear.left {
+  left: 28px;
+}
+
+.pinata-ear.right {
+  right: 28px;
+}
+
+.pinata-tail {
+  position: absolute;
+  right: 2px;
+  top: 52px;
+  width: 34px;
+  height: 14px;
+  border-radius: 999px;
+  background: #22a06b;
+  transform: rotate(-15deg);
+}
+
+.pinata-leg {
+  position: absolute;
+  bottom: 10px;
+  width: 14px;
+  height: 28px;
+  border-radius: 999px;
+  background: #172033;
+}
+
+.pinata-leg.one {
+  left: 46px;
+}
+
+.pinata-leg.two {
+  left: 70px;
+}
+
+.pinata-leg.three {
+  right: 46px;
+}
+
+.pinata-leg.four {
+  right: 70px;
+}
+
+.celebration-kicker {
+  margin: 0 0 6px;
+  color: #3566d6;
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.celebration-card h2 {
+  margin: 0;
+  color: #172033;
+  font-size: clamp(2.2rem, 8vw, 4rem);
+  line-height: 1;
+}
+
+.celebration-card p {
+  color: #526070;
+}
+
+.celebration-button {
+  border: 0;
+  border-radius: 8px;
+  background: #3566d6;
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 800;
+  padding: 12px 18px;
+}
+
+.celebration-button:hover {
+  background: #2856bd;
+}
+
+@keyframes pinata-swing {
+  0%,
+  100% {
+    transform: translateX(-50%) rotate(-7deg);
+  }
+
+  50% {
+    transform: translateX(-50%) rotate(7deg);
+  }
+}
+
+@keyframes confetti-fall {
+  from {
+    transform: translateY(-40px) rotate(0deg);
+  }
+
+  to {
+    transform: translateY(calc(100vh + 80px)) rotate(calc(var(--spin) * 520deg));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pinata,
+  .confetti-piece {
+    animation: none;
+  }
+}
+
 @media (max-width: 820px) {
   .app-shell {
     width: min(100% - 20px, 1120px);
