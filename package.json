@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "test": "node scripts/testSortingTraces.mjs",
     "build": "vite build",
     "preview": "vite preview"
   },
