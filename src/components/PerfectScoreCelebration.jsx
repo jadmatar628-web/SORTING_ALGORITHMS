@@ -1,3 +1,5 @@
+import React from 'react';
+
 const confetti = Array.from({ length: 42 }, (_, index) => index);
 
 export default function PerfectScoreCelebration({ onClose }) {

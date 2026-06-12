@@ -203,6 +203,24 @@ select {
   padding-top: 14px;
 }
 
+.step-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.step-details span,
+.result-detail {
+  border: 1px solid #dbe6fb;
+  border-radius: 999px;
+  background: #f4f7ff;
+  color: #2856bd;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 4px 8px;
+}
+
 .array-input {
   display: grid;
   gap: 8px;
@@ -316,6 +334,11 @@ select {
 .answer-text,
 .result-badge {
   font-weight: 800;
+}
+
+.result-detail {
+  display: inline-block;
+  margin: 0 0 8px;
 }
 
 .result-badge.good {

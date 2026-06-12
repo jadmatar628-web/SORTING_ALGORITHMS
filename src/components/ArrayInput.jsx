@@ -1,3 +1,4 @@
+import React from 'react';
 import { parseNumberList } from '../utils/validateArray.js';
 
 export default function ArrayInput({

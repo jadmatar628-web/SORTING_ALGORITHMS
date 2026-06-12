@@ -1,4 +1,14 @@
+import React from 'react';
 import ArrayInput from './ArrayInput.jsx';
+
+const actionLabels = {
+  'choose-pivot': 'Choose pivot',
+  'move-left': 'Move left',
+  'move-right': 'Move right',
+  'swap-left-right': 'Swap left/right',
+  'place-pivot': 'Place pivot',
+  'partition-complete': 'Partition complete'
+};
 
 export default function ResultTable({ results, onTryAgain }) {
   if (!results) {
@@ -46,7 +56,15 @@ export default function ResultTable({ results, onTryAgain }) {
                 disabled
               />
             </div>
-            <div className="table-cell answer-text">{step.correct.join(' ')}</div>
+            <div className="table-cell answer-text">
+              {step.details && (
+                <div className="result-detail">
+                  {actionLabels[step.details.action] ?? step.details.action}, pivot{' '}
+                  {step.details.pivotValue}, left {step.details.left}, right {step.details.right}
+                </div>
+              )}
+              {step.correct.join(' ')}
+            </div>
             <div className={`table-cell result-badge ${step.isCorrect ? 'good' : 'bad'}`}>
               {step.isCorrect ? 'Correct' : 'Incorrect'}
             </div>

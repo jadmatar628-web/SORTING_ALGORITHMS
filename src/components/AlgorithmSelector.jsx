@@ -1,3 +1,5 @@
+import React from 'react';
+
 const algorithms = [
   { value: 'bubble', label: 'Bubble Sort' },
   { value: 'selection', label: 'Selection Sort' },

@@ -86,6 +86,10 @@ function arraysEqual(left, right) {
   return left.length === right.length && left.every((value, index) => value === right[index]);
 }
 
+function getStepArray(step) {
+  return Array.isArray(step) ? step : step.array;
+}
+
 function supportsCase(name, values) {
   if (name === 'radix') {
     return values.every((value) => Number.isInteger(value) && value >= 0);
@@ -110,21 +114,22 @@ function testTraceInvariants() {
         assert(trace.length > 0, `${name} ${order} produced no steps for ${input}`);
 
         trace.forEach((step, stepIndex) => {
+          const stepArray = getStepArray(step);
           assert(
-            step.length === input.length,
+            stepArray.length === input.length,
             `${name} ${order} step ${stepIndex + 1} has wrong length`
           );
           assert(
-            step.every(Number.isFinite),
+            stepArray.every(Number.isFinite),
             `${name} ${order} step ${stepIndex + 1} contains a non-number`
           );
           assert(
-            sameMultiset(step, input),
+            sameMultiset(stepArray, input),
             `${name} ${order} step ${stepIndex + 1} changes the original values`
           );
         });
 
-        const finalStep = trace.at(-1);
+        const finalStep = getStepArray(trace.at(-1));
         const expected = sortedCopy(input, order);
         assert(
           arraysEqual(finalStep, expected),
@@ -137,12 +142,36 @@ function testTraceInvariants() {
 
 function testKnownMvpExamples() {
   for (const testCase of exactTraceCases) {
-    const trace = testCase.fn(testCase.input, testCase.order);
+    const trace = testCase.fn(testCase.input, testCase.order).map(getStepArray);
     assert(
       arraysEqual(trace.flat(), testCase.expected.flat()),
       `${testCase.name} trace does not match the requested MVP example`
     );
   }
+}
+
+function testI2206QuickSortTraceDetails() {
+  const trace = generateQuickSortTrace([7, 3, 9, 2, 6], 'ascending');
+  const actions = trace.map((step) => step.action);
+
+  assert(trace[0].pivotOriginalIndex === 0, 'quick sort should choose the leftmost pivot');
+  assert(trace[0].pivotValue === 7, 'quick sort first pivot should be A[low]');
+  assert(actions.includes('choose-pivot'), 'quick sort trace should include pivot choice');
+  assert(actions.includes('move-left'), 'quick sort trace should include left pointer movement');
+  assert(actions.includes('move-right'), 'quick sort trace should include right pointer movement');
+  assert(actions.includes('swap-left-right'), 'quick sort trace should include internal swaps');
+  assert(actions.includes('place-pivot'), 'quick sort trace should include final pivot placement');
+  assert(actions.includes('partition-complete'), 'quick sort trace should mark partition completion');
+  assert(
+    arraysEqual(getStepArray(trace.at(-1)), [2, 3, 6, 7, 9]),
+    'quick sort final step should be sorted ascending'
+  );
+
+  const descendingTrace = generateQuickSortTrace([7, 3, 9, 2, 6], 'descending');
+  assert(
+    arraysEqual(getStepArray(descendingTrace.at(-1)), [9, 7, 6, 3, 2]),
+    'quick sort final step should be sorted descending'
+  );
 }
 
 function testGradingExample() {
@@ -162,6 +191,7 @@ function testGradingExample() {
 
 testTraceInvariants();
 testKnownMvpExamples();
+testI2206QuickSortTraceDetails();
 testGradingExample();
 
 console.log('All sorting trace tests passed.');

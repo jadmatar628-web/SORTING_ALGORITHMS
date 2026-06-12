@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import SetupForm from './components/SetupForm.jsx';
 import StepForm from './components/StepForm.jsx';
 import ResultTable from './components/ResultTable.jsx';
@@ -76,6 +76,10 @@ function getTrace(array, setup) {
 
 function blankSteps(stepCount, size) {
   return Array.from({ length: stepCount }, () => Array.from({ length: size }, () => ''));
+}
+
+function traceStepDetails(trace) {
+  return trace.map((step) => (Array.isArray(step) ? null : step));
 }
 
 function readSavedProgress() {
@@ -224,6 +228,7 @@ export default function App() {
 
           <StepForm
             userSteps={userSteps}
+            stepDetails={traceStepDetails(correctSteps)}
             errors={stepErrors}
             onStepChange={handleStepChange}
             onSubmit={handleSubmit}

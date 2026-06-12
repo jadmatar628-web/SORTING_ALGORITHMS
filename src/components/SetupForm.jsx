@@ -1,3 +1,4 @@
+import React from 'react';
 import AlgorithmSelector from './AlgorithmSelector.jsx';
 
 export default function SetupForm({
