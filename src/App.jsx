@@ -5,6 +5,12 @@ import ResultTable from './components/ResultTable.jsx';
 import { generateBubbleSortTrace } from './sorting/bubbleSortTrace.js';
 import { generateSelectionSortTrace } from './sorting/selectionSortTrace.js';
 import { generateInsertionSortTrace } from './sorting/insertionSortTrace.js';
+import { generateMergeSortTrace } from './sorting/mergeSortTrace.js';
+import { generateQuickSortTrace } from './sorting/quickSortTrace.js';
+import { generateHeapSortTrace } from './sorting/heapSortTrace.js';
+import { generateCountingSortTrace } from './sorting/countingSortTrace.js';
+import { generateRadixSortTrace } from './sorting/radixSortTrace.js';
+import { generateBucketSortTrace } from './sorting/bucketSortTrace.js';
 import { compareUserSteps } from './sorting/compareAnswers.js';
 import { generateRandomArray } from './utils/generateRandomArray.js';
 import { parseNumberList, validateStepArray } from './utils/validateArray.js';
@@ -19,6 +25,18 @@ const defaultSetup = {
   optimizedBubble: false
 };
 
+const algorithmLabels = {
+  bubble: 'Bubble Sort',
+  selection: 'Selection Sort',
+  insertion: 'Insertion Sort',
+  merge: 'Merge Sort',
+  quick: 'Quick Sort',
+  heap: 'Heap Sort',
+  counting: 'Counting Sort',
+  radix: 'Radix Sort',
+  bucket: 'Bucket Sort'
+};
+
 function getTrace(array, setup) {
   if (setup.algorithm === 'bubble') {
     return generateBubbleSortTrace(array, setup.order, setup.optimizedBubble);
@@ -28,7 +46,31 @@ function getTrace(array, setup) {
     return generateSelectionSortTrace(array, setup.order);
   }
 
-  return generateInsertionSortTrace(array, setup.order);
+  if (setup.algorithm === 'insertion') {
+    return generateInsertionSortTrace(array, setup.order);
+  }
+
+  if (setup.algorithm === 'merge') {
+    return generateMergeSortTrace(array, setup.order);
+  }
+
+  if (setup.algorithm === 'quick') {
+    return generateQuickSortTrace(array, setup.order);
+  }
+
+  if (setup.algorithm === 'heap') {
+    return generateHeapSortTrace(array, setup.order);
+  }
+
+  if (setup.algorithm === 'counting') {
+    return generateCountingSortTrace(array, setup.order);
+  }
+
+  if (setup.algorithm === 'radix') {
+    return generateRadixSortTrace(array, setup.order);
+  }
+
+  return generateBucketSortTrace(array, setup.order);
 }
 
 function blankSteps(stepCount, size) {
@@ -84,6 +126,16 @@ export default function App() {
         setSetupError('Custom array can only contain numbers.');
         return;
       }
+
+      if (['counting', 'radix'].includes(setup.algorithm) && array.some((value) => !Number.isInteger(value))) {
+        setSetupError(`${algorithmLabels[setup.algorithm]} needs whole numbers.`);
+        return;
+      }
+
+      if (setup.algorithm === 'radix' && array.some((value) => value < 0)) {
+        setSetupError('Radix Sort needs non-negative whole numbers.');
+        return;
+      }
     } else {
       array = generateRandomArray(size);
     }
@@ -129,12 +181,7 @@ export default function App() {
     setResults(compareUserSteps(parsedSteps, correctSteps));
   }
 
-  const algorithmName =
-    setup.algorithm === 'bubble'
-      ? 'Bubble Sort'
-      : setup.algorithm === 'selection'
-        ? 'Selection Sort'
-        : 'Insertion Sort';
+  const algorithmName = algorithmLabels[setup.algorithm] ?? 'Insertion Sort';
 
   return (
     <main className="app-shell">

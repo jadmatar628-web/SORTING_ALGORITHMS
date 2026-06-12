@@ -1,7 +1,13 @@
 const algorithms = [
   { value: 'bubble', label: 'Bubble Sort' },
   { value: 'selection', label: 'Selection Sort' },
-  { value: 'insertion', label: 'Insertion Sort' }
+  { value: 'insertion', label: 'Insertion Sort' },
+  { value: 'merge', label: 'Merge Sort' },
+  { value: 'quick', label: 'Quick Sort' },
+  { value: 'heap', label: 'Heap Sort' },
+  { value: 'counting', label: 'Counting Sort' },
+  { value: 'radix', label: 'Radix Sort' },
+  { value: 'bucket', label: 'Bucket Sort' }
 ];
 
 export default function AlgorithmSelector({ value, onChange }) {
