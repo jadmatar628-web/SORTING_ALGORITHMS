@@ -90,6 +90,16 @@ function getStepArray(step) {
   return Array.isArray(step) ? step : step.array;
 }
 
+function assertStepObject(step, name, mode) {
+  assert(step && !Array.isArray(step), `${name} ${mode} should return step objects`);
+  assert(Array.isArray(step.array), `${name} ${mode} step should include array`);
+  assert(step.traceMode === mode, `${name} ${mode} step should include selected trace mode`);
+  assert(typeof step.algorithm === 'string', `${name} ${mode} step should include algorithm`);
+  assert('comparedIndices' in step, `${name} ${mode} step should include comparedIndices`);
+  assert('swappedIndices' in step, `${name} ${mode} step should include swappedIndices`);
+  assert('note' in step, `${name} ${mode} step should include note`);
+}
+
 function supportsCase(name, values) {
   if (name === 'radix') {
     return values.every((value) => Number.isInteger(value) && value >= 0);
@@ -140,6 +150,25 @@ function testTraceInvariants() {
   }
 }
 
+function testTraceStepObjects() {
+  for (const [name, fn] of algorithms) {
+    for (const mode of ['pass', 'detailed']) {
+      const input = name === 'radix' ? [17, 3, 42, 8, 25] : [7, 3, 9, 2, 6];
+      const trace =
+        name === 'bubble'
+          ? fn(input, 'ascending', mode, false)
+          : fn(input, 'ascending', mode);
+
+      assert(trace.length > 0, `${name} ${mode} produced no trace steps`);
+      trace.forEach((step) => assertStepObject(step, name, mode));
+      assert(
+        arraysEqual(getStepArray(trace.at(-1)), sortedCopy(input, 'ascending')),
+        `${name} ${mode} final step should be sorted`
+      );
+    }
+  }
+}
+
 function testKnownMvpExamples() {
   for (const testCase of exactTraceCases) {
     const trace = testCase.fn(testCase.input, testCase.order).map(getStepArray);
@@ -174,6 +203,38 @@ function testI2206QuickSortTraceDetails() {
   );
 }
 
+function testDetailedModeActions() {
+  const bubble = generateBubbleSortTrace([2, 1], 'ascending', 'detailed');
+  assert(bubble.some((step) => step.action === 'compare'), 'bubble detailed should compare');
+  assert(bubble.some((step) => step.action === 'swap'), 'bubble detailed should swap');
+
+  const insertion = generateInsertionSortTrace([3, 2, 1], 'ascending', 'detailed');
+  assert(insertion.some((step) => step.action === 'shift'), 'insertion detailed should shift');
+  assert(insertion.some((step) => step.action === 'insert'), 'insertion detailed should insert');
+
+  const merge = generateMergeSortTrace([2, 1], 'ascending', 'detailed');
+  assert(merge.some((step) => step.action === 'compare'), 'merge detailed should compare');
+  assert(merge.some((step) => step.action === 'place'), 'merge detailed should place values');
+
+  const heap = generateHeapSortTrace([3, 1, 2], 'ascending', 'detailed');
+  assert(heap.some((step) => step.action === 'extract-swap'), 'heap detailed should extract');
+
+  const radix = generateRadixSortTrace([17, 3, 42], 'ascending', 'detailed');
+  assert(radix.some((step) => step.action === 'bucket-insert'), 'radix detailed should fill buckets');
+  assert(radix.some((step) => step.action === 'bucket-read'), 'radix detailed should read buckets');
+}
+
+function testPassModeSkipsInternalActions() {
+  const bubble = generateBubbleSortTrace([2, 1], 'ascending', 'pass');
+  assert(!bubble.some((step) => step.action === 'compare'), 'bubble pass should skip comparisons');
+
+  const quick = generateQuickSortTrace([7, 3, 9, 2, 6], 'ascending', 'pass');
+  assert(
+    quick.every((step) => step.action === 'partition-complete'),
+    'quick pass should only record completed partitions'
+  );
+}
+
 function testGradingExample() {
   const correct = generateBubbleSortTrace([7, 3, 9, 2, 6], 'ascending');
   const user = [
@@ -190,8 +251,11 @@ function testGradingExample() {
 }
 
 testTraceInvariants();
+testTraceStepObjects();
 testKnownMvpExamples();
 testI2206QuickSortTraceDetails();
+testDetailedModeActions();
+testPassModeSkipsInternalActions();
 testGradingExample();
 
 console.log('All sorting trace tests passed.');

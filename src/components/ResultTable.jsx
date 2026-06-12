@@ -2,12 +2,33 @@ import React from 'react';
 import ArrayInput from './ArrayInput.jsx';
 
 const actionLabels = {
+  compare: 'Compare',
+  swap: 'Swap',
+  'pass-complete': 'Pass complete',
+  'select-min': 'Select min',
+  'swap-selected': 'Swap selected',
+  shift: 'Shift',
+  insert: 'Insert',
   'choose-pivot': 'Choose pivot',
   'move-left': 'Move left',
   'move-right': 'Move right',
   'swap-left-right': 'Swap left/right',
   'place-pivot': 'Place pivot',
-  'partition-complete': 'Partition complete'
+  'partition-complete': 'Partition complete',
+  place: 'Place',
+  'merge-complete': 'Merge complete',
+  'heapify-swap': 'Heapify swap',
+  'heap-built': 'Heap built',
+  'extract-swap': 'Extraction swap',
+  'extraction-complete': 'Extraction complete',
+  'bucket-insert': 'Bucket insert',
+  'bucket-read': 'Bucket read',
+  'digit-pass-complete': 'Digit pass complete',
+  'count-value': 'Count value',
+  'write-value': 'Write value',
+  'value-group-complete': 'Value group complete',
+  'sort-bucket': 'Sort bucket',
+  'bucket-complete': 'Bucket complete'
 };
 
 export default function ResultTable({ results, onTryAgain }) {
@@ -59,8 +80,12 @@ export default function ResultTable({ results, onTryAgain }) {
             <div className="table-cell answer-text">
               {step.details && (
                 <div className="result-detail">
-                  {actionLabels[step.details.action] ?? step.details.action}, pivot{' '}
-                  {step.details.pivotValue}, left {step.details.left}, right {step.details.right}
+                  {actionLabels[step.details.action] ?? step.details.action}
+                  {step.details.passNumber != null ? `, pass ${step.details.passNumber}` : ''}
+                  {step.details.pivotValue != null ? `, pivot ${step.details.pivotValue}` : ''}
+                  {step.details.left != null ? `, left ${step.details.left}` : ''}
+                  {step.details.right != null ? `, right ${step.details.right}` : ''}
+                  {step.details.note ? `: ${step.details.note}` : ''}
                 </div>
               )}
               {step.correct.join(' ')}

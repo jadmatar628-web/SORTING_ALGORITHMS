@@ -23,6 +23,7 @@ const defaultSetup = {
   inputType: 'auto',
   algorithm: 'bubble',
   order: 'ascending',
+  traceMode: 'pass',
   optimizedBubble: false
 };
 
@@ -39,39 +40,43 @@ const algorithmLabels = {
 };
 
 function getTrace(array, setup) {
+  const traceMode = setup.traceMode ?? (setup.algorithm === 'quick' ? 'detailed' : 'pass');
+
   if (setup.algorithm === 'bubble') {
-    return generateBubbleSortTrace(array, setup.order, setup.optimizedBubble);
+    return generateBubbleSortTrace(array, setup.order, traceMode, setup.optimizedBubble);
   }
 
   if (setup.algorithm === 'selection') {
-    return generateSelectionSortTrace(array, setup.order);
+    return generateSelectionSortTrace(array, setup.order, traceMode);
   }
 
   if (setup.algorithm === 'insertion') {
-    return generateInsertionSortTrace(array, setup.order);
+    return generateInsertionSortTrace(array, setup.order, traceMode);
   }
 
   if (setup.algorithm === 'merge') {
-    return generateMergeSortTrace(array, setup.order);
+    return generateMergeSortTrace(array, setup.order, traceMode, {
+      pdfStrictMergeComparison: true
+    });
   }
 
   if (setup.algorithm === 'quick') {
-    return generateQuickSortTrace(array, setup.order);
+    return generateQuickSortTrace(array, setup.order, traceMode);
   }
 
   if (setup.algorithm === 'heap') {
-    return generateHeapSortTrace(array, setup.order);
+    return generateHeapSortTrace(array, setup.order, traceMode);
   }
 
   if (setup.algorithm === 'counting') {
-    return generateCountingSortTrace(array, setup.order);
+    return generateCountingSortTrace(array, setup.order, traceMode);
   }
 
   if (setup.algorithm === 'radix') {
-    return generateRadixSortTrace(array, setup.order);
+    return generateRadixSortTrace(array, setup.order, traceMode);
   }
 
-  return generateBucketSortTrace(array, setup.order);
+  return generateBucketSortTrace(array, setup.order, traceMode);
 }
 
 function blankSteps(stepCount, size) {
@@ -93,7 +98,7 @@ function readSavedProgress() {
 
 export default function App() {
   const saved = useMemo(readSavedProgress, []);
-  const [setup, setSetup] = useState(saved?.setup ?? defaultSetup);
+  const [setup, setSetup] = useState({ ...defaultSetup, ...(saved?.setup ?? {}) });
   const [customArrayText, setCustomArrayText] = useState(saved?.customArrayText ?? '');
   const [initialArray, setInitialArray] = useState(saved?.initialArray ?? []);
   const [correctSteps, setCorrectSteps] = useState(saved?.correctSteps ?? []);
@@ -118,7 +123,11 @@ export default function App() {
     setShowCelebration(false);
 
     const size = Math.max(2, Math.min(12, Number(setup.size) || 5));
-    const nextSetup = { ...setup, size };
+    const nextSetup = {
+      ...setup,
+      size,
+      traceMode: setup.traceMode ?? (setup.algorithm === 'quick' ? 'detailed' : 'pass')
+    };
     let array;
 
     if (setup.inputType === 'custom') {
@@ -221,7 +230,7 @@ export default function App() {
           <div className="section-heading">
             <h2>{algorithmName}</h2>
             <p>
-              Order: {setup.order}. Initial array:
+              Order: {setup.order}. Trace detail: {setup.traceMode}. Initial array:
               <span className="initial-array"> {initialArray.join(' ')}</span>
             </p>
           </div>

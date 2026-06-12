@@ -1,3 +1,5 @@
+import { createTraceStep } from './traceStep.js';
+
 function shouldMoveLeft(value, pivot, order) {
   return order === 'ascending' ? value <= pivot : value >= pivot;
 }
@@ -6,9 +8,10 @@ function shouldMoveRight(value, pivot, order) {
   return order === 'ascending' ? value > pivot : value < pivot;
 }
 
-export function generateI2206QuickSortTrace(array, order = 'ascending') {
+export function generateI2206QuickSortTrace(array, order = 'ascending', traceMode = 'detailed') {
   const values = [...array];
   const steps = [];
+  const mode = traceMode === 'pass' ? 'pass' : 'detailed';
 
   function addStep({
     low,
@@ -22,19 +25,36 @@ export function generateI2206QuickSortTrace(array, order = 'ascending') {
     swappedLeft = null,
     swappedRight = null
   }) {
-    steps.push({
-      array: [...values],
-      low,
-      high,
-      pivotOriginalIndex,
-      pivotIndex,
-      pivotValue,
-      left,
-      right,
-      action,
-      swappedLeft,
-      swappedRight
-    });
+    steps.push(
+      createTraceStep({
+        array: values,
+        algorithm: 'quick-sort',
+        traceMode: mode,
+        passNumber: null,
+        low,
+        high,
+        pivotOriginalIndex,
+        pivotIndex,
+        pivotValue,
+        left,
+        right,
+        action,
+        swappedIndices:
+          swappedLeft === null || swappedRight === null ? null : [swappedLeft, swappedRight],
+        note:
+          action === 'partition-complete'
+            ? `Pivot ${pivotValue} placed at index ${pivotIndex}.`
+            : action === 'choose-pivot'
+              ? `Choose leftmost pivot ${pivotValue} at index ${pivotOriginalIndex}.`
+              : action === 'move-left'
+                ? `Move left pointer to ${left}.`
+                : action === 'move-right'
+                  ? `Move right pointer to ${right}.`
+                  : action === 'swap-left-right'
+                    ? `Swap A[${swappedLeft}] and A[${swappedRight}].`
+                    : `Place pivot ${pivotValue} at index ${pivotIndex}.`
+      })
+    );
   }
 
   function partition(low, high) {
@@ -43,76 +63,86 @@ export function generateI2206QuickSortTrace(array, order = 'ascending') {
     let left = low + 1;
     let right = high;
 
-    addStep({
-      low,
-      high,
-      pivotOriginalIndex,
-      pivotValue,
-      left,
-      right,
-      action: 'choose-pivot'
-    });
+    if (mode === 'detailed') {
+      addStep({
+        low,
+        high,
+        pivotOriginalIndex,
+        pivotValue,
+        left,
+        right,
+        action: 'choose-pivot'
+      });
+    }
 
     while (left <= right) {
       while (left <= right && shouldMoveLeft(values[left], pivotValue, order)) {
+        if (mode === 'detailed') {
+          addStep({
+            low,
+            high,
+            pivotOriginalIndex,
+            pivotValue,
+            left,
+            right,
+            action: 'move-left'
+          });
+        }
         left += 1;
-        addStep({
-          low,
-          high,
-          pivotOriginalIndex,
-          pivotValue,
-          left,
-          right,
-          action: 'move-left'
-        });
       }
 
       while (left <= right && shouldMoveRight(values[right], pivotValue, order)) {
+        if (mode === 'detailed') {
+          addStep({
+            low,
+            high,
+            pivotOriginalIndex,
+            pivotValue,
+            left,
+            right,
+            action: 'move-right'
+          });
+        }
         right -= 1;
-        addStep({
-          low,
-          high,
-          pivotOriginalIndex,
-          pivotValue,
-          left,
-          right,
-          action: 'move-right'
-        });
       }
 
       if (left < right) {
         const swappedLeft = left;
         const swappedRight = right;
         [values[left], values[right]] = [values[right], values[left]];
+        if (mode === 'detailed') {
+          addStep({
+            low,
+            high,
+            pivotOriginalIndex,
+            pivotValue,
+            left,
+            right,
+            action: 'swap-left-right',
+            swappedLeft,
+            swappedRight
+          });
+        }
         left += 1;
         right -= 1;
-        addStep({
-          low,
-          high,
-          pivotOriginalIndex,
-          pivotValue,
-          left,
-          right,
-          action: 'swap-left-right',
-          swappedLeft,
-          swappedRight
-        });
       }
     }
 
     values[low] = values[right];
     values[right] = pivotValue;
 
-    addStep({
-      low,
-      high,
-      pivotOriginalIndex,
-      pivotIndex: right,
-      pivotValue,
-      left,
-      right,
-      action: 'place-pivot'
-    });
+    if (mode === 'detailed') {
+      addStep({
+        low,
+        high,
+        pivotOriginalIndex,
+        pivotIndex: right,
+        pivotValue,
+        left,
+        right,
+        action: 'place-pivot'
+      });
+    }
     addStep({
       low,
       high,

@@ -35,7 +35,13 @@ export default function SetupForm({
 
         <AlgorithmSelector
           value={setup.algorithm}
-          onChange={(algorithm) => onSetupChange({ ...setup, algorithm })}
+          onChange={(algorithm) =>
+            onSetupChange({
+              ...setup,
+              algorithm,
+              traceMode: algorithm === 'quick' ? 'detailed' : 'pass'
+            })
+          }
         />
 
         <label className="field">
@@ -46,6 +52,17 @@ export default function SetupForm({
           >
             <option value="ascending">Ascending</option>
             <option value="descending">Descending</option>
+          </select>
+        </label>
+
+        <label className="field">
+          <span>Trace Detail</span>
+          <select
+            value={setup.traceMode ?? 'pass'}
+            onChange={(event) => onSetupChange({ ...setup, traceMode: event.target.value })}
+          >
+            <option value="pass">Pass mode: Show array after each pass</option>
+            <option value="detailed">Detailed mode: Show every swap/shift/pointer movement</option>
           </select>
         </label>
       </div>
