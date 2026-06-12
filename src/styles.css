@@ -393,109 +393,10 @@ select {
   border: 1px solid rgba(255, 255, 255, 0.72);
   border-radius: 8px;
   background: #ffffff;
-  padding: 96px 28px 28px;
+  padding: 34px 28px 28px;
   text-align: center;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
-}
-
-.pinata-string {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 2px;
-  height: 74px;
-  background: #334155;
-  transform: translateX(-50%);
-}
-
-.pinata {
-  position: absolute;
-  top: 48px;
-  left: 50%;
-  width: 154px;
-  height: 110px;
-  transform-origin: 50% -46px;
-  animation: pinata-swing 1.5s ease-in-out infinite;
-}
-
-.pinata-body {
-  position: absolute;
-  inset: 18px 22px 26px;
-  display: grid;
-  overflow: hidden;
-  border: 3px solid #172033;
-  border-radius: 50% 45% 48% 44%;
-  background: #f7c948;
-}
-
-.pinata-body span:nth-child(1) {
-  background: #ef476f;
-}
-
-.pinata-body span:nth-child(2) {
-  background: #f7c948;
-}
-
-.pinata-body span:nth-child(3) {
-  background: #22a06b;
-}
-
-.pinata-body span:nth-child(4) {
-  background: #56ccf2;
-}
-
-.pinata-ear {
-  position: absolute;
-  top: 10px;
-  width: 38px;
-  height: 34px;
-  border: 3px solid #172033;
-  background: #ef476f;
-  transform: rotate(45deg);
-}
-
-.pinata-ear.left {
-  left: 28px;
-}
-
-.pinata-ear.right {
-  right: 28px;
-}
-
-.pinata-tail {
-  position: absolute;
-  right: 2px;
-  top: 52px;
-  width: 34px;
-  height: 14px;
-  border-radius: 999px;
-  background: #22a06b;
-  transform: rotate(-15deg);
-}
-
-.pinata-leg {
-  position: absolute;
-  bottom: 10px;
-  width: 14px;
-  height: 28px;
-  border-radius: 999px;
-  background: #172033;
-}
-
-.pinata-leg.one {
-  left: 46px;
-}
-
-.pinata-leg.two {
-  left: 70px;
-}
-
-.pinata-leg.three {
-  right: 46px;
-}
-
-.pinata-leg.four {
-  right: 70px;
+  animation: message-pop 0.56s cubic-bezier(0.16, 1.35, 0.45, 1) both;
 }
 
 .celebration-kicker {
@@ -512,6 +413,7 @@ select {
   color: #172033;
   font-size: clamp(2.2rem, 8vw, 4rem);
   line-height: 1;
+  animation: headline-pop 0.7s cubic-bezier(0.16, 1.35, 0.45, 1) 0.08s both;
 }
 
 .celebration-card p {
@@ -532,14 +434,34 @@ select {
   background: #2856bd;
 }
 
-@keyframes pinata-swing {
-  0%,
-  100% {
-    transform: translateX(-50%) rotate(-7deg);
+@keyframes message-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.58) translateY(34px);
   }
 
-  50% {
-    transform: translateX(-50%) rotate(7deg);
+  65% {
+    opacity: 1;
+    transform: scale(1.08) translateY(-6px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes headline-pop {
+  0% {
+    transform: scale(0.72);
+  }
+
+  60% {
+    transform: scale(1.14);
+  }
+
+  100% {
+    transform: scale(1);
   }
 }
 
@@ -554,7 +476,8 @@ select {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pinata,
+  .celebration-card,
+  .celebration-card h2,
   .confetti-piece {
     animation: none;
   }

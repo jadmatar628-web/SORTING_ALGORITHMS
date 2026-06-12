@@ -19,23 +19,6 @@ export default function PerfectScoreCelebration({ onClose }) {
       </div>
 
       <div className="celebration-card">
-        <div className="pinata-string" aria-hidden="true" />
-        <div className="pinata" aria-hidden="true">
-          <div className="pinata-ear left" />
-          <div className="pinata-ear right" />
-          <div className="pinata-body">
-            <span />
-            <span />
-            <span />
-            <span />
-          </div>
-          <div className="pinata-tail" />
-          <div className="pinata-leg one" />
-          <div className="pinata-leg two" />
-          <div className="pinata-leg three" />
-          <div className="pinata-leg four" />
-        </div>
-
         <p className="celebration-kicker">Perfect score</p>
         <h2>100% correct</h2>
         <p>You nailed every sorting step.</p>
