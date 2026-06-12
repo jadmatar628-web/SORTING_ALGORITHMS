@@ -225,6 +225,13 @@ export default function App() {
       )}
 
       <ResultTable results={results} onTryAgain={() => setResults(null)} />
+
+      <footer className="watermark">
+        Created by Jad Matar Whatsapp{' '}
+        <a href="https://wa.me/96181850192" target="_blank" rel="noreferrer">
+          0096181850192
+        </a>
+      </footer>
     </main>
   );
 }
